@@ -1,7 +1,8 @@
-package com.spider.lagou;
+package com.spider.service.impl;
 
 import com.spider.entity.JobEntity;
 import com.spider.service.JobService;
+import com.spider.service.LagouCrawlService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,14 +10,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Component
-@Order(value=1)
-public class LagouSpider implements CommandLineRunner {
+@Service
+public class LagouCrawlServiveImpl implements LagouCrawlService{
 
     @Autowired
     private JobService jobService;
@@ -24,19 +24,19 @@ public class LagouSpider implements CommandLineRunner {
     private Map<String,String> cookie = new HashMap<String, String>();
 
 
-
+    @Override
     public void getAll(){
 
         String body = null;
-        LagouSpider lagouSpider = new LagouSpider();
+        LagouCrawlServiveImpl lagouCrawlServiveImpl = new LagouCrawlServiveImpl();
         String url1 = "https://www.lagou.com/zhaopin/Java/";
         String url2 = "/?filterOption=";
         String url=null;
         for(int i = 1;i<=30;i++){
             System.out.println("页码是"+i);
             url = url1+i+url2+i;
-            body = lagouSpider.request(url);
-            lagouSpider.parse(body);
+            body = lagouCrawlServiveImpl.request(url);
+            lagouCrawlServiveImpl.parse(body);
            try{
                Thread.sleep(1000);
            }catch(InterruptedException e){
@@ -83,7 +83,7 @@ public class LagouSpider implements CommandLineRunner {
             jobEntity.setLgPosition(position);
             //获取工资
             String salary = element.select("li").attr("data-salary");
-            salary = salary.replaceAll(" ","");
+            salary = salary.trim();
             salary = salary.replaceAll("K","");
             String[] salaryArray = salary.split("-");
             System.out.println("工资：" +salary);
@@ -106,25 +106,13 @@ public class LagouSpider implements CommandLineRunner {
 
     }
 
-    private static List<String> test1(String str) {
-        StringTokenizer st = new StringTokenizer(str, "- :");
-
-        List<String> data = new ArrayList<String>();
-
-        while (st.hasMoreElements()) {
-            data.add(st.nextToken());
-        }return data;
-    }
     public static void main(String[] args) {
 
-        LagouSpider lagouSpider = new LagouSpider();
-         lagouSpider.getAll();
+        LagouCrawlServiveImpl lagouCrawlServiveImpl = new LagouCrawlServiveImpl();
+         lagouCrawlServiveImpl.getAll();
 
     }
 
-    @Override
-    public void run(String... strings) throws Exception {
-        getAll();
-    }
+
 }
 
