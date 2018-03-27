@@ -18,14 +18,14 @@ public class TestMongo {
 
     @Test
     public void test(){
-        try {
-            JobEntity entity = new JobEntity();
-            entity.setLgId(454545L);
-            entity.setLgPosition("dfdfdfdfd");
-            mongoRepository.save(entity);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+//            JobEntity entity = new JobEntity();
+//            entity.setLgId(454545L);
+//            entity.setLgPosition("dfdfdfdfd");
+//            mongoRepository.save(entity);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
         System.out.println("插入成功");
     }
