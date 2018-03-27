@@ -1,6 +1,7 @@
 package com.spider.service.impl;
 
 import com.spider.JobHtmlForm;
+import com.spider.RedisUtil;
 import com.spider.entity.JobEntity;
 import com.spider.repository.JobMongoRepository;
 import com.spider.service.JobService;
@@ -22,6 +23,8 @@ public class LagouCrawlServiceImpl implements LagouCrawlService {
     private JobService jobService;
     @Autowired
     private JobMongoRepository jobMongoRepository;
+    @Autowired
+    private RedisUtil redisUtil;
 
     private Map<String, String> cookie = new HashMap<String, String>();
 
@@ -69,7 +72,7 @@ public class LagouCrawlServiceImpl implements LagouCrawlService {
             JobHtmlForm jobHtmlForm  = new JobHtmlForm();
             jobHtmlForm.setBody(body);
             jobHtmlForm.setUrl(url);
-            jobMongoRepository.save(jobHtmlForm);
+//            jobMongoRepository.save(jobHtmlForm);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,13 +112,23 @@ public class LagouCrawlServiceImpl implements LagouCrawlService {
             String begin = salaryArray[0] + "000";
             String end = salaryArray[1] + "000";
 
-            //保存
+
+
+
+
+
+            String href = element.select("a.position_link").attr("href");//获取链接
+            Long id = Long.parseLong(href.replaceAll("[^0-9]", ""));
+
+            //保存到Redis
+            redisUtil.add("jobId",id.toString());
+            //保存到MySQL
             jobEntity.setLgSalaryBegin(begin);
             jobEntity.setLgSalaryEnd(end);
-            String href = element.select("a.position_link").attr("href");//获取链接
+
             System.out.println("链接：  " + href);
             jobEntity.setLgHref(href);
-            Long id = Long.parseLong(href.replaceAll("[^0-9]", ""));
+
             jobEntity.setLgId(id);
             jobEntity.setLgCreateTime(new Date());
             jobEntity.setLgUpdateTime(new Date());
