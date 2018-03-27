@@ -9,14 +9,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class LagouCrawlServiveImpl implements LagouCrawlService{
+public class LagouCrawlServiceImpl implements LagouCrawlService{
 
     @Autowired
     private JobService jobService;
@@ -28,15 +26,15 @@ public class LagouCrawlServiveImpl implements LagouCrawlService{
     public void getAll(){
 
         String body = null;
-        LagouCrawlServiveImpl lagouCrawlServiveImpl = new LagouCrawlServiveImpl();
+
         String url1 = "https://www.lagou.com/zhaopin/Java/";
         String url2 = "/?filterOption=";
         String url=null;
         for(int i = 1;i<=30;i++){
             System.out.println("页码是"+i);
             url = url1+i+url2+i;
-            body = lagouCrawlServiveImpl.request(url);
-            lagouCrawlServiveImpl.parse(body);
+            body = request(url);
+            parse(body);
            try{
                Thread.sleep(1000);
            }catch(InterruptedException e){
@@ -84,7 +82,7 @@ public class LagouCrawlServiveImpl implements LagouCrawlService{
             //获取工资
             String salary = element.select("li").attr("data-salary");
             salary = salary.trim();
-            salary = salary.replaceAll("K","");
+            salary = salary.replaceAll("k","");
             String[] salaryArray = salary.split("-");
             System.out.println("工资：" +salary);
 
@@ -101,17 +99,18 @@ public class LagouCrawlServiveImpl implements LagouCrawlService{
             jobEntity.setLgId(id);
             jobEntity.setLgCreateTime(new Date());
             jobEntity.setLgUpdateTime(new Date());
+            System.out.println(position);
             jobService.save(jobEntity);
         }
 
     }
 
-    public static void main(String[] args) {
-
-        LagouCrawlServiveImpl lagouCrawlServiveImpl = new LagouCrawlServiveImpl();
-         lagouCrawlServiveImpl.getAll();
-
-    }
+//    public static void main(String[] args) {
+//
+//        LagouCrawlServiveImpl lagouCrawlServiveImpl = new LagouCrawlServiveImpl();
+//         lagouCrawlServiveImpl.getAll();
+//
+//    }
 
 
 }

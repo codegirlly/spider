@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan
+@ComponentScan(basePackages={"com.spider"})
 public class SpiderApplication {
 
     public static void main(String[] args) throws Exception {
